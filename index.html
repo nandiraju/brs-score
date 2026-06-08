@@ -99,19 +99,26 @@ body {
   background: var(--background);
   min-height: 100vh;
   color: var(--ink);
-  padding: 0 0 64px;
+  padding: 90px 0 64px; /* Added padding-top to account for the fixed header */
 }
 
 /* ── Top nav bar ── */
 .topbar {
-  background: linear-gradient(135deg, var(--brand-blue) 0%, var(--brand-blue-deep) 100%);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: linear-gradient(135deg, rgba(26, 54, 93, 0.85) 0%, rgba(14, 31, 56, 0.9) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   padding: 0 32px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   height: 58px;
-  margin-bottom: 32px;
-  box-shadow: 0 2px 12px rgba(14,31,56,0.18);
+  box-shadow: 0 2px 20px rgba(14, 31, 56, 0.15);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 .topbar img { height: 34px; display: block; }
 .topbar-right {
