@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Breast Cancer Risk Assessment — 1Cell.Ai</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --background:    #f9fafd;
+  --surface:       #ffffff;
+  --surface-strong:#f1f1f1;
+  --ink:           #1a365d;
+  --muted:         #445278;
+  --line:          #c8d5dc;
+  --accent:        #daa520;
+  --accent-soft:   rgba(218,165,32,0.16);
+  --accent-strong: #1b325a;
+  --brand-blue:    #1a365d;
+  --brand-blue-deep:#0e1f38;
+  --brand-blue-2:  #1b325a;
+  --brand-sky:     #2099e8;
+  --brand-indigo:  #5c7ac6;
+  --brand-coral:   #e5575e;
+  --brand-coral-soft:rgba(229,87,94,0.1);
+  --warning-soft:  rgba(218,165,32,0.12);
+  --danger-soft:   rgba(229,87,94,0.1);
+  --shadow:        0 4px 20px -4px rgba(27,50,90,0.08);
+  --radius: 8px;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--background);
+  min-height: 100vh;
+  color: var(--ink);
+  padding: 0 0 64px;
+}
+
+/* ── Top nav bar ── */
+.topbar {
+  background: linear-gradient(135deg, var(--brand-blue) 0%, var(--brand-blue-deep) 100%);
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 58px;
+  margin-bottom: 32px;
+  box-shadow: 0 2px 12px rgba(14,31,56,0.18);
+}
+.topbar img { height: 34px; display: block; }
+.topbar-right {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: .3px;
+}
+
+.container { width: 80%; margin: 0 auto; padding: 0; }
+
+/* ── Page header ── */
+header { margin-bottom: 24px; }
+.page-eyebrow {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+h1 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.65rem;
+  font-weight: 700;
+  color: var(--brand-blue);
+  margin-bottom: 4px;
+  line-height: 1.2;
+}
+.subtitle { color: var(--muted); font-size: 0.87rem; }
+
+.disclaimer {
+  background: var(--warning-soft);
+  border: 1px solid rgba(218,165,32,0.35);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 11px 15px;
+  font-size: 0.81rem;
+  color: var(--ink);
+  margin-bottom: 24px;
+  line-height: 1.55;
+}
+
+/* ── Model badges ── */
+.model-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 5px; }
+.tag {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.66rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+}
+.tag-gail  { background: rgba(32,153,232,0.14); color: var(--brand-sky); }
+.tag-tc    { background: var(--accent-soft);     color: #7a5800; }
+.tag-bcsc  { background: rgba(92,122,198,0.14);  color: var(--brand-indigo); }
+.tag-all   { background: var(--surface-strong);  color: var(--muted); }
+
+/* ── Cards ── */
+.card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--accent);
+  box-shadow: var(--shadow);
+  padding: 22px;
+  margin-bottom: 16px;
+}
+
+.card h2 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--brand-blue);
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 9px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.field { margin-bottom: 14px; }
+.field:last-child { margin-bottom: 0; }
+
+label {
+  font-family: 'Outfit', sans-serif;
+  display: block;
+  font-size: 0.83rem;
+  font-weight: 500;
+  margin-bottom: 5px;
+  color: var(--ink);
+}
+label .hint { font-weight: 400; color: var(--muted); font-size: 0.77rem; }
+
+input[type="number"], select {
+  font-family: 'Poppins', sans-serif;
+  width: 100%;
+  padding: 8px 11px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 0.87rem;
+  color: var(--ink);
+  background: var(--surface-strong);
+  transition: border-color .15s, background .15s;
+}
+input[type="number"]:focus, select:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: var(--surface);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+@media(max-width:520px) { .row2,.row3 { grid-template-columns: 1fr; } }
+
+/* ── Pill radios ── */
+.radio-group { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 4px; }
+.pill-wrap {
+  font-family: 'Outfit', sans-serif;
+  display: flex; align-items: center; gap: 5px; cursor: pointer;
+  background: var(--surface-strong);
+  border: 1.5px solid var(--line);
+  border-radius: 6px; padding: 6px 12px; font-size: 0.82rem;
+  font-weight: 500;
+  transition: all .13s; user-select: none; color: var(--muted);
+}
+.pill-wrap input[type="radio"] { display: none; }
+.pill-wrap.selected {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--brand-blue-2);
+  font-weight: 600;
+}
+
+/* ── Buttons ── */
+.btn {
+  font-family: 'Outfit', sans-serif;
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 11px 28px;
+  background: var(--brand-blue); color: #fff; border: none;
+  border-radius: var(--radius); font-size: 0.97rem; font-weight: 600;
+  cursor: pointer; transition: background .15s, transform .1s;
+  letter-spacing: .2px;
+}
+.btn:hover { background: var(--brand-blue-deep); }
+.btn:active { transform: scale(.99); }
+.btn-outline {
+  background: transparent;
+  color: var(--brand-blue);
+  border: 2px solid var(--brand-blue);
+  margin-top: 10px;
+}
+.btn-outline:hover { background: var(--accent-soft); border-color: var(--accent); color: var(--brand-blue-2); }
+.btn-wrap { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 4px; }
+
+/* ── Results ── */
+#result-section { display: none; margin-top: 24px; }
+
+.results-header { margin-bottom: 18px; }
+.results-header h2 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.25rem; font-weight: 700; color: var(--brand-blue);
+}
+.results-header p { font-size: 0.83rem; color: var(--muted); margin-top: 3px; }
+
+/* ── Comparison grid ── */
+.compare-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap: 14px;
+  margin-bottom: 16px;
+}
+@media(max-width:600px) { .compare-grid { grid-template-columns: 1fr; } }
+
+.model-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  border-top: 4px solid;
+  box-shadow: var(--shadow);
+  padding: 20px 16px;
+  text-align: center;
+}
+.model-card.gail  { border-top-color: var(--brand-sky); }
+.model-card.tc    { border-top-color: var(--accent); }
+.model-card.bcsc  { border-top-color: var(--brand-indigo); }
+
+.model-card .model-name {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .7px; margin-bottom: 2px;
+}
+.model-card.gail .model-name { color: var(--brand-sky); }
+.model-card.tc   .model-name { color: var(--accent); }
+.model-card.bcsc .model-name { color: var(--brand-indigo); }
+
+.model-card .model-full { font-size: 0.71rem; color: var(--muted); margin-bottom: 12px; }
+
+.big-risk {
+  font-family: 'Outfit', sans-serif;
+  font-size: 2.5rem; font-weight: 700; line-height: 1; margin-bottom: 2px;
+}
+.model-card.gail .big-risk { color: var(--brand-sky); }
+.model-card.tc   .big-risk { color: var(--accent); }
+.model-card.bcsc .big-risk { color: var(--brand-indigo); }
+
+.risk-label { font-size: 0.71rem; color: var(--muted); margin-bottom: 8px; }
+
+.band {
+  display: inline-block; padding: 3px 12px;
+  border-radius: 20px; font-family: 'Outfit', sans-serif;
+  font-size: 0.76rem; font-weight: 700; margin-bottom: 10px;
+  letter-spacing: .2px;
+}
+.band-low  { background: rgba(25,135,84,0.12);  color: #0a5132; }
+.band-mod  { background: var(--warning-soft);    color: #7a5800; border: 1px solid rgba(218,165,32,0.3); }
+.band-high { background: var(--danger-soft);     color: #842029; }
+
+.sub-risks { margin-top: 10px; border-top: 1px solid var(--line); padding-top: 10px; }
+.sub-risk-row { display: flex; justify-content: space-between; font-size: 0.77rem; padding: 3px 0; }
+.sub-risk-row .slabel { color: var(--muted); }
+.sub-risk-row .sval   { font-family: 'Outfit', sans-serif; font-weight: 600; color: var(--ink); }
+
+.bar-wrap { background: var(--surface-strong); border-radius: 999px; height: 8px; margin: 8px 0 4px; overflow: hidden; border: 1px solid var(--line); }
+.bar-fill { height: 100%; border-radius: 999px; transition: width .9s ease; }
+
+/* ── Detail tabs ── */
+.tab-bar { display: flex; margin-bottom: 0; border-bottom: 2px solid var(--line); }
+.tab-btn {
+  font-family: 'Outfit', sans-serif;
+  padding: 9px 18px; font-size: 0.84rem; font-weight: 600;
+  border: none; background: none; cursor: pointer; color: var(--muted);
+  border-bottom: 3px solid transparent; margin-bottom: -2px;
+  transition: color .13s, border-color .13s;
+}
+.tab-btn.active-gail  { color: var(--brand-sky);    border-bottom-color: var(--brand-sky); }
+.tab-btn.active-tc    { color: var(--accent);        border-bottom-color: var(--accent); }
+.tab-btn.active-bcsc  { color: var(--brand-indigo);  border-bottom-color: var(--brand-indigo); }
+
+.tab-content { display: none; padding-top: 16px; }
+.tab-content.active { display: block; }
+
+/* ── Factor rows ── */
+.factor-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 0.83rem;
+}
+.factor-item:last-child { border-bottom: none; }
+.factor-rr {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700; padding: 2px 9px; border-radius: 4px; font-size: 0.78rem;
+}
+.rr-neutral { background: var(--surface-strong); color: var(--muted); }
+.rr-up      { background: var(--danger-soft);    color: #842029; }
+.rr-down    { background: rgba(25,135,84,0.12);  color: #0a5132; }
+
+/* ── Recommendation ── */
+.rec-box {
+  border-left: 4px solid;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 13px 15px;
+  font-size: 0.85rem;
+  line-height: 1.65;
+  margin-top: 14px;
+}
+.rec-gail { background: rgba(32,153,232,0.07);  border-color: var(--brand-sky); }
+.rec-tc   { background: var(--warning-soft);     border-color: var(--accent); }
+.rec-bcsc { background: rgba(92,122,198,0.08);   border-color: var(--brand-indigo); }
+
+.model-note {
+  font-size: 0.72rem; color: var(--muted); text-align: center;
+  margin-top: 14px; line-height: 1.5;
+}
+.na-badge { color: var(--muted); font-style: italic; font-size: 0.8rem; }
+
+ion-icon {
+  font-size: 1rem;
+  vertical-align: -2px;
+  flex-shrink: 0;
+}
+.card h2 ion-icon { font-size: 1.05rem; color: var(--accent); }
+.page-eyebrow ion-icon { font-size: 0.9rem; vertical-align: -1px; }
+.btn ion-icon { font-size: 1rem; vertical-align: -2px; }
+
+/* ── About link in topbar ── */
+.about-link {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.75);
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 6px;
+  padding: 5px 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: background .15s, color .15s;
+  text-decoration: none;
+}
+.about-link:hover { background: rgba(255,255,255,0.18); color: #fff; }
+.about-link ion-icon { font-size: 0.95rem; }
+
+/* ── Modal ── */
+.modal-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(14,31,56,0.55);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-backdrop.open { display: flex; }
+
+.modal {
+  background: var(--surface);
+  border-radius: var(--radius);
+  border-top: 4px solid var(--accent);
+  box-shadow: 0 8px 40px rgba(14,31,56,0.22);
+  max-width: 680px;
+  width: 100%;
+  max-height: 88vh;
+  overflow-y: auto;
+  padding: 30px;
+  position: relative;
+  animation: modalIn .18s ease;
+}
+@keyframes modalIn { from { opacity:0; transform:translateY(-12px); } to { opacity:1; transform:none; } }
+
+.modal-close {
+  position: absolute;
+  top: 16px; right: 16px;
+  background: var(--surface-strong);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  color: var(--muted);
+  transition: background .13s;
+}
+.modal-close:hover { background: var(--line); color: var(--ink); }
+.modal-close ion-icon { font-size: 1.1rem; }
+
+.modal h3 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--brand-blue);
+  margin-bottom: 4px;
+}
+.modal .modal-sub {
+  font-size: 0.83rem;
+  color: var(--muted);
+  margin-bottom: 24px;
+}
+
+.model-section {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  border-left: 4px solid;
+  padding: 16px 18px;
+  margin-bottom: 14px;
+}
+.model-section.gail-s  { border-left-color: var(--brand-sky); }
+.model-section.tc-s    { border-left-color: var(--accent); }
+.model-section.bcsc-s  { border-left-color: var(--brand-indigo); }
+
+.model-section-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.model-section-head h4 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--brand-blue);
+}
+.model-section-head .ms-tag {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.gail-s .ms-tag  { background: rgba(32,153,232,0.14); color: var(--brand-sky); }
+.tc-s   .ms-tag  { background: var(--accent-soft);    color: #7a5800; }
+.bcsc-s .ms-tag  { background: rgba(92,122,198,0.14); color: var(--brand-indigo); }
+
+.model-section p { font-size: 0.84rem; color: var(--muted); line-height: 1.65; margin-bottom: 8px; }
+.model-section p:last-child { margin-bottom: 0; }
+
+.factor-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.chip {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 500;
+  background: var(--surface-strong);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 3px 10px;
+  color: var(--ink);
+}
+
+.modal-footer {
+  margin-top: 20px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  font-size: 0.78rem;
+  color: var(--muted);
+  line-height: 1.55;
+}
+</style>
+</head>
+<body>
+
+<!-- ── Top navigation bar ── -->
+<nav class="topbar">
+  <img src="https://1cell.ai/wp-content/uploads/2024/06/1CellAi-Reverse-logo.svg" alt="1Cell.Ai" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+  <span style="display:none;font-family:'Outfit',sans-serif;font-size:1rem;font-weight:700;color:#fff;letter-spacing:.5px;">1Cell.Ai</span>
+  <div style="display:flex;align-items:center;gap:16px;">
+    <span class="topbar-right">Clinical Risk Intelligence</span>
+    <button class="about-link" onclick="document.getElementById('aboutModal').classList.add('open')">
+      <ion-icon name="information-circle-outline"></ion-icon> About Models
+    </button>
+  </div>
+</nav>
+
+<!-- ── About Modal ── -->
+<div class="modal-backdrop" id="aboutModal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal">
+    <button class="modal-close" onclick="document.getElementById('aboutModal').classList.remove('open')">
+      <ion-icon name="close-outline"></ion-icon>
+    </button>
+
+    <h3>About the Risk Models</h3>
+    <p class="modal-sub">This tool runs three independently validated breast cancer risk models simultaneously. Each uses different inputs and produces different outputs — understanding their strengths helps interpret results.</p>
+
+    <div class="model-section gail-s">
+      <div class="model-section-head">
+        <h4>Gail Model</h4>
+        <span class="ms-tag">NCI BCRAT</span>
+      </div>
+      <p>Developed by Mitchell Gail et al. (1989) and implemented by the National Cancer Institute as the Breast Cancer Risk Assessment Tool (BCRAT). It is the most widely used model in US clinical practice.</p>
+      <p>Outputs an absolute <strong>5-year and lifetime risk</strong> of invasive breast cancer. The 1.67% five-year threshold is used clinically to assess eligibility for chemoprevention (tamoxifen, raloxifene).</p>
+      <p><strong>Limitations:</strong> Does not include second-degree family history, breast density, hormonal factors, or BRCA status. Less accurate for women with strong hereditary risk.</p>
+      <div class="factor-chips">
+        <span class="chip">Age</span>
+        <span class="chip">Race / Ethnicity</span>
+        <span class="chip">Age at menarche</span>
+        <span class="chip">Age at first live birth</span>
+        <span class="chip">1st-degree relatives</span>
+        <span class="chip">Prior biopsies</span>
+        <span class="chip">Atypical hyperplasia</span>
+      </div>
+    </div>
+
+    <div class="model-section tc-s">
+      <div class="model-section-head">
+        <h4>Tyrer–Cuzick (IBIS)</h4>
+        <span class="ms-tag">IBIS v8</span>
+      </div>
+      <p>Developed by Jonathan Tyrer and Jack Cuzick (2004) at the International Breast Cancer Intervention Study (IBIS). Considered the most <strong>comprehensive</strong> risk model available and recommended by NICE (UK) for high-risk assessment.</p>
+      <p>Outputs <strong>lifetime risk to age 80</strong> plus 5-year and 10-year estimates. A lifetime risk ≥ 20% typically qualifies a patient for enhanced screening (annual MRI in addition to mammography) and genetic referral.</p>
+      <p><strong>Strengths:</strong> Incorporates BRCA1/2 carrier probability, extended family history, hormonal exposures, BMI, breast density, and benign breast disease — making it the most sensitive model for hereditary risk.</p>
+      <div class="factor-chips">
+        <span class="chip">Age + Menopausal status</span>
+        <span class="chip">BMI</span>
+        <span class="chip">Menarche age</span>
+        <span class="chip">First birth age</span>
+        <span class="chip">HRT use</span>
+        <span class="chip">Oral contraceptives</span>
+        <span class="chip">1st + 2nd-degree relatives</span>
+        <span class="chip">Ovarian cancer (family)</span>
+        <span class="chip">BRCA1 / BRCA2</span>
+        <span class="chip">Breast density</span>
+        <span class="chip">Atypical hyperplasia / LCIS</span>
+      </div>
+    </div>
+
+    <div class="model-section bcsc-s">
+      <div class="model-section-head">
+        <h4>BCSC Model</h4>
+        <span class="ms-tag">Tice et al. 2008 / 2019</span>
+      </div>
+      <p>Developed by the Breast Cancer Surveillance Consortium (Tice et al., 2008; updated 2019) using data from over 1 million mammography screening visits across six US registries.</p>
+      <p>Outputs a <strong>5-year absolute risk</strong> calibrated to the US screening population. Its key differentiator is the direct inclusion of <strong>mammographic breast density</strong> (BI-RADS categories), which is one of the strongest independent risk factors.</p>
+      <p><strong>Use case:</strong> Particularly useful in breast imaging settings where BI-RADS density is already recorded. Enables radiologists to communicate personalised risk at the point of screening.</p>
+      <div class="factor-chips">
+        <span class="chip">Age</span>
+        <span class="chip">Race / Ethnicity</span>
+        <span class="chip">1st-degree relatives</span>
+        <span class="chip">Prior biopsies</span>
+        <span class="chip">Atypical hyperplasia</span>
+        <span class="chip">Breast density (BI-RADS)</span>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <strong>References:</strong> Gail MH et al., JNCI 1989. Tyrer J et al., Stat Med 2004. Tice JA et al., Ann Intern Med 2008; updated 2019.
+      This tool uses simplified implementations of published relative risk weights for educational purposes. Results are not a substitute for clinical evaluation.
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+<header>
+  <div class="page-eyebrow"><ion-icon name="ribbon-outline"></ion-icon> Breast Health · Risk Assessment</div>
+  <h1>Breast Cancer Risk Assessment</h1>
+  <p class="subtitle">Three validated models: Gail · Tyrer–Cuzick (IBIS) · BCSC — educational use only</p>
+</header>
+
+<div class="disclaimer">
+  <strong>For educational purposes only.</strong> These are statistical estimates, not diagnoses.
+  A lifetime risk ≥ 20% (Tyrer–Cuzick) or 5-year risk above model thresholds may warrant enhanced screening.
+  Always discuss results with a qualified clinician.
+</div>
+
+<form id="riskForm" novalidate>
+
+  <!-- ── Core Demographics (All models) ── -->
+  <div class="card">
+    <h2><ion-icon name="person-outline"></ion-icon> Demographics
+      <div class="model-tags"><span class="tag tag-all">ALL MODELS</span></div>
+    </h2>
+
+    <div class="row2">
+      <div class="field">
+        <label>Current Age <span class="hint">(years, 20–85)</span></label>
+        <input type="number" id="age" min="20" max="85" placeholder="e.g. 45" required>
+      </div>
+      <div class="field">
+        <label>Race / Ethnicity</label>
+        <select id="race">
+          <option value="white">White / Non-Hispanic</option>
+          <option value="black">Black / African American</option>
+          <option value="hispanic">Hispanic / Latina</option>
+          <option value="asian">Asian / Pacific Islander</option>
+          <option value="native">American Indian / Alaska Native</option>
+          <option value="other">Other / Unknown</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row2">
+      <div class="field">
+        <label>Age at First Period <span class="hint">(menarche)</span></label>
+        <input type="number" id="menarche" min="8" max="18" placeholder="e.g. 12">
+      </div>
+      <div class="field">
+        <label>First-Degree Relatives with Breast Cancer <span class="hint">(mother, sister, daughter)</span></label>
+        <div class="radio-group" id="fam1-group">
+          <div class="pill-wrap selected" onclick="selectPill(this,'fam1','0')"><input type="radio" name="fam1" value="0" checked>0</div>
+          <div class="pill-wrap" onclick="selectPill(this,'fam1','1')"><input type="radio" name="fam1" value="1">1</div>
+          <div class="pill-wrap" onclick="selectPill(this,'fam1','2')"><input type="radio" name="fam1" value="2">2+</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row2">
+      <div class="field">
+        <label>Previous Breast Biopsies</label>
+        <div class="radio-group" id="biopsies-group">
+          <div class="pill-wrap selected" onclick="selectPill(this,'biopsies','0')"><input type="radio" name="biopsies" value="0" checked>0</div>
+          <div class="pill-wrap" onclick="selectPill(this,'biopsies','1')"><input type="radio" name="biopsies" value="1">1</div>
+          <div class="pill-wrap" onclick="selectPill(this,'biopsies','2')"><input type="radio" name="biopsies" value="2">2+</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Atypical Hyperplasia on Biopsy</label>
+        <div class="radio-group" id="atyp-group">
+          <div class="pill-wrap selected" onclick="selectPill(this,'atyp','unknown')"><input type="radio" name="atyp" value="unknown" checked>Unknown</div>
+          <div class="pill-wrap" onclick="selectPill(this,'atyp','no')"><input type="radio" name="atyp" value="no">No</div>
+          <div class="pill-wrap" onclick="selectPill(this,'atyp','yes')"><input type="radio" name="atyp" value="yes">Yes</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Reproductive History (Gail + TC) ── -->
+  <div class="card">
+    <h2><ion-icon name="calendar-outline"></ion-icon> Reproductive History
+      <div class="model-tags">
+        <span class="tag tag-gail">GAIL</span>
+        <span class="tag tag-tc">TYRER–CUZICK</span>
+      </div>
+    </h2>
+
+    <div class="field">
+      <label>Age at First Live Birth</label>
+      <select id="firstBirth">
+        <option value="nulliparous">No live births (nulliparous)</option>
+        <option value="lt20">Under 20</option>
+        <option value="20_24">20–24</option>
+        <option value="25_29" selected>25–29</option>
+        <option value="30_34">30–34</option>
+        <option value="gte35">35 or older</option>
+      </select>
+    </div>
+
+    <div class="row2">
+      <div class="field">
+        <label>Oral Contraceptive Use</label>
+        <div class="radio-group" id="oc-group">
+          <div class="pill-wrap selected" onclick="selectPill(this,'oc','never')"><input type="radio" name="oc" value="never" checked>Never</div>
+          <div class="pill-wrap" onclick="selectPill(this,'oc','past')"><input type="radio" name="oc" value="past">Past</div>
+          <div class="pill-wrap" onclick="selectPill(this,'oc','current')"><input type="radio" name="oc" value="current">Current</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>HRT (Hormone Replacement Therapy)</label>
+        <div class="radio-group" id="hrt-group">
+          <div class="pill-wrap selected" onclick="selectPill(this,'hrt','never')"><input type="radio" name="hrt" value="never" checked>Never</div>
+          <div class="pill-wrap" onclick="selectPill(this,'hrt','past')"><input type="radio" name="hrt" value="past">Past</div>
+          <div class="pill-wrap" onclick="selectPill(this,'hrt','current')"><input type="radio" name="hrt" value="current">Current (combined)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Body & Clinical (TC + BCSC) ── -->
+  <div class="card">
+    <h2><ion-icon name="flask-outline"></ion-icon> Clinical Factors
+      <div class="model-tags">
+        <span class="tag tag-tc">TYRER–CUZICK</span>
+        <span class="tag tag-bcsc">BCSC</span>
+      </div>
+    </h2>
+
+    <div class="row2">
+      <div class="field">
+        <label>Height <span class="hint">(cm, for BMI)</span></label>
+        <input type="number" id="height" min="140" max="210" placeholder="e.g. 165">
+      </div>
+      <div class="field">
+        <label>Weight <span class="hint">(kg, for BMI)</span></label>
+        <input type="number" id="weight" min="35" max="200" placeholder="e.g. 70">
+      </div>
+    </div>
+
+    <div class="row2">
+      <div class="field">
+        <label>Menopausal Status</label>
+        <div class="radio-group" id="meno-group">
+          <div class="pill-wrap selected" onclick="selectPill(this,'meno','pre')"><input type="radio" name="meno" value="pre" checked>Pre-menopausal</div>
+          <div class="pill-wrap" onclick="selectPill(this,'meno','post')"><input type="radio" name="meno" value="post">Post-menopausal</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Mammographic Breast Density <span class="hint">(BI-RADS)</span></label>
+        <select id="density">
+          <option value="1">A — Almost entirely fatty</option>
+          <option value="2" selected>B — Scattered fibroglandular</option>
+          <option value="3">C — Heterogeneously dense</option>
+          <option value="4">D — Extremely dense</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Personal History of Benign Breast Disease <span class="hint">(Tyrer–Cuzick only)</span></label>
+      <div class="radio-group" id="benign-group">
+        <div class="pill-wrap selected" onclick="selectPill(this,'benign','none')"><input type="radio" name="benign" value="none" checked>None</div>
+        <div class="pill-wrap" onclick="selectPill(this,'benign','hyperplasia')"><input type="radio" name="benign" value="hyperplasia">Atypical Hyperplasia</div>
+        <div class="pill-wrap" onclick="selectPill(this,'benign','lcis')"><input type="radio" name="benign" value="lcis">LCIS</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Extended Family (TC only) ── -->
+  <div class="card">
+    <h2><ion-icon name="people-outline"></ion-icon> Extended Family History & Genetics
+      <div class="model-tags"><span class="tag tag-tc">TYRER–CUZICK</span></div>
+    </h2>
+
+    <div class="row2">
+      <div class="field">
+        <label>Second-Degree Relatives with Breast Cancer <span class="hint">(grandmother, aunt)</span></label>
+        <div class="radio-group" id="fam2-group">
+          <div class="pill-wrap selected" onclick="selectPill(this,'fam2','0')"><input type="radio" name="fam2" value="0" checked>0</div>
+          <div class="pill-wrap" onclick="selectPill(this,'fam2','1')"><input type="radio" name="fam2" value="1">1</div>
+          <div class="pill-wrap" onclick="selectPill(this,'fam2','2')"><input type="radio" name="fam2" value="2">2+</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Family History of Ovarian Cancer</label>
+        <div class="radio-group" id="ovarian-group">
+          <div class="pill-wrap selected" onclick="selectPill(this,'ovarian','no')"><input type="radio" name="ovarian" value="no" checked>No</div>
+          <div class="pill-wrap" onclick="selectPill(this,'ovarian','yes')"><input type="radio" name="ovarian" value="yes">Yes</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Known BRCA Mutation Status</label>
+      <div class="radio-group" id="brca-group">
+        <div class="pill-wrap selected" onclick="selectPill(this,'brca','unknown')"><input type="radio" name="brca" value="unknown" checked>Unknown / Not tested</div>
+        <div class="pill-wrap" onclick="selectPill(this,'brca','negative')"><input type="radio" name="brca" value="negative">Negative</div>
+        <div class="pill-wrap" onclick="selectPill(this,'brca','brca1')"><input type="radio" name="brca" value="brca1">BRCA1+</div>
+        <div class="pill-wrap" onclick="selectPill(this,'brca','brca2')"><input type="radio" name="brca" value="brca2">BRCA2+</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-wrap">
+    <button type="submit" class="btn"><ion-icon name="analytics-outline"></ion-icon> Calculate All Three Models</button>
+  </div>
+</form>
+
+<!-- ── Results ── -->
+<div id="result-section">
+
+  <div class="results-header">
+    <h2><ion-icon name="bar-chart-outline"></ion-icon> Risk Assessment Results</h2>
+    <p>Three models calculated from your inputs</p>
+  </div>
+
+  <!-- Comparison cards -->
+  <div class="compare-grid">
+    <div class="model-card gail">
+      <div class="model-name">Gail Model</div>
+      <div class="model-full">NCI / Breast Cancer Risk Assessment Tool</div>
+      <div class="big-risk" id="gail-5yr">—%</div>
+      <div class="risk-label">5-Year Risk</div>
+      <div><span class="band" id="gail-band">—</span></div>
+      <div class="bar-wrap"><div class="bar-fill" id="gail-bar" style="width:0%;background:var(--blue)"></div></div>
+      <div class="sub-risks">
+        <div class="sub-risk-row"><span class="slabel">Lifetime risk</span><span class="sval" id="gail-life">—</span></div>
+        <div class="sub-risk-row"><span class="slabel">Avg population</span><span class="sval">12%</span></div>
+        <div class="sub-risk-row"><span class="slabel">Relative risk</span><span class="sval" id="gail-rr">—</span></div>
+      </div>
+    </div>
+
+    <div class="model-card tc">
+      <div class="model-name">Tyrer–Cuzick</div>
+      <div class="model-full">IBIS Breast Cancer Risk Evaluation</div>
+      <div class="big-risk" id="tc-life">—%</div>
+      <div class="risk-label">Lifetime Risk (to age 80)</div>
+      <div><span class="band" id="tc-band">—</span></div>
+      <div class="bar-wrap"><div class="bar-fill" id="tc-bar" style="width:0%;background:var(--pink)"></div></div>
+      <div class="sub-risks">
+        <div class="sub-risk-row"><span class="slabel">10-year risk</span><span class="sval" id="tc-10yr">—</span></div>
+        <div class="sub-risk-row"><span class="slabel">5-year risk</span><span class="sval" id="tc-5yr">—</span></div>
+        <div class="sub-risk-row"><span class="slabel">Relative risk</span><span class="sval" id="tc-rr">—</span></div>
+      </div>
+    </div>
+
+    <div class="model-card bcsc">
+      <div class="model-name">BCSC Model</div>
+      <div class="model-full">Breast Cancer Surveillance Consortium</div>
+      <div class="big-risk" id="bcsc-5yr">—%</div>
+      <div class="risk-label">5-Year Risk</div>
+      <div><span class="band" id="bcsc-band">—</span></div>
+      <div class="bar-wrap"><div class="bar-fill" id="bcsc-bar" style="width:0%;background:var(--teal)"></div></div>
+      <div class="sub-risks">
+        <div class="sub-risk-row"><span class="slabel">Avg same age/race</span><span class="sval" id="bcsc-avg">—</span></div>
+        <div class="sub-risk-row"><span class="slabel">Relative to avg</span><span class="sval" id="bcsc-rr">—</span></div>
+        <div class="sub-risk-row"><span class="slabel">Density included</span><span class="sval">✓ Yes</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detailed breakdown tabs -->
+  <div class="card">
+    <div class="tab-bar">
+      <button class="tab-btn active-gail" onclick="showTab('gail',this)">Gail Detail</button>
+      <button class="tab-btn" onclick="showTab('tc',this)">Tyrer–Cuzick Detail</button>
+      <button class="tab-btn" onclick="showTab('bcsc',this)">BCSC Detail</button>
+    </div>
+
+    <!-- Gail tab -->
+    <div class="tab-content active" id="tab-gail">
+      <p style="font-size:.8rem;color:var(--gray);margin-bottom:12px">
+        <strong>Gail Model</strong> — Uses age, race, menarche, first birth, family history, biopsy history, and atypical hyperplasia.
+        Published by Gail et al. (1989), implemented by NCI. Outputs 5-year and lifetime absolute risk.
+      </p>
+      <div id="gail-factors"></div>
+      <div class="rec-box rec-gail" id="gail-rec"></div>
+      <p class="model-note">Baseline hazard from NCI BCRAT tables (white women), adjusted for race. Competing mortality included implicitly via short time horizons.</p>
+    </div>
+
+    <!-- TC tab -->
+    <div class="tab-content" id="tab-tc">
+      <p style="font-size:.8rem;color:var(--gray);margin-bottom:12px">
+        <strong>Tyrer–Cuzick (IBIS)</strong> — Most comprehensive model. Includes BRCA probability, extended family history, hormonal factors, BMI, and breast density.
+        Calibrated to ~12% population lifetime risk to age 80.
+      </p>
+      <div id="tc-factors"></div>
+      <div class="rec-box rec-tc" id="tc-rec"></div>
+      <p class="model-note">Combined RR applied to annual baseline hazard (0.00145). Lifetime risk computed as 1 − e^(−h × years remaining).</p>
+    </div>
+
+    <!-- BCSC tab -->
+    <div class="tab-content" id="tab-bcsc">
+      <p style="font-size:.8rem;color:var(--gray);margin-bottom:12px">
+        <strong>BCSC</strong> — Incorporates mammographic breast density alongside standard risk factors. Developed by Tice et al. (2008) from screening program data.
+        Outputs 5-year risk.
+      </p>
+      <div id="bcsc-factors"></div>
+      <div class="rec-box rec-bcsc" id="bcsc-rec"></div>
+      <p class="model-note">Baseline risk stratified by age and race from BCSC cohort tables. Breast density RR from BI-RADS category.</p>
+    </div>
+  </div>
+
+  <div class="btn-wrap">
+    <button class="btn btn-outline" onclick="resetForm()"><ion-icon name="refresh-outline"></ion-icon> Start Over</button>
+  </div>
+</div><!-- /result-section -->
+
+</div><!-- /container -->
+
+<script>
+// ── Helpers ──────────────────────────────────────────────────────────────────
+function selectPill(el, name, value) {
+  document.querySelectorAll(`[id="${name}-group"] .pill-wrap`).forEach(p => p.classList.remove('selected'));
+  el.classList.add('selected');
+  el.querySelector('input[type="radio"]').checked = true;
+}
+
+function getRadio(name) {
+  const el = document.querySelector(`input[name="${name}"]:checked`);
+  return el ? el.value : null;
+}
+
+function pct(n, dp=1) { return n.toFixed(dp) + '%'; }
+
+function bandInfo(p, mode) {
+  // mode: 'gail5' | 'lifetime' | 'bcsc5'
+  if (mode === 'lifetime') {
+    if (p < 15) return ['band-low','Low Risk (<15%)'];
+    if (p < 20) return ['band-mod','Moderate (15–20%)'];
+    return ['band-high','High Risk (≥20%)'];
+  }
+  // 5-year
+  if (p < 1.67) return ['band-low','Average / Low'];
+  if (p < 3)    return ['band-mod','Moderate'];
+  return ['band-high','Elevated'];
+}
+
+function showTab(name, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b => b.className = 'tab-btn');
+  btn.className = 'tab-btn active-' + name;
+}
+
+function factorHTML(items) {
+  return items.map(f => {
+    const cls = f.rr > 1.05 ? 'rr-up' : f.rr < 0.95 ? 'rr-down' : 'rr-neutral';
+    const sig = f.rr > 1.05 ? '↑' : f.rr < 0.95 ? '↓' : '~';
+    return `<div class="factor-item">
+      <span><strong>${f.name}</strong>: <span style="color:#6c757d">${f.label}</span></span>
+      <span class="factor-rr ${cls}">${sig} RR ${f.rr.toFixed(2)}</span>
+    </div>`;
+  }).join('');
+}
+
+// ── GAIL MODEL ───────────────────────────────────────────────────────────────
+// Source: Gail MH et al. (1989), NCI BCRAT implementation
+// RRs from Costantino et al. (1999) JNCI
+const GAIL_BASELINE_5YR = {
+  // [age_group_start]: { white, black, hispanic, asian, native, other }
+  20: {white:.08, black:.07, hispanic:.06, asian:.05, native:.07, other:.07},
+  25: {white:.12, black:.10, hispanic:.09, asian:.08, native:.10, other:.10},
+  30: {white:.42, black:.38, hispanic:.32, asian:.28, native:.37, other:.38},
+  35: {white:.72, black:.64, hispanic:.55, asian:.50, native:.63, other:.64},
+  40: {white:1.27,black:1.13,hispanic:.97, asian:.87, native:1.10,other:1.13},
+  45: {white:1.55,black:1.39,hispanic:1.19,asian:1.07,native:1.35,other:1.39},
+  50: {white:2.07,black:1.85,hispanic:1.58,asian:1.43,native:1.80,other:1.85},
+  55: {white:2.19,black:1.97,hispanic:1.69,asian:1.52,native:1.91,other:1.97},
+  60: {white:2.68,black:2.40,hispanic:2.06,asian:1.85,native:2.33,other:2.40},
+  65: {white:2.98,black:2.66,hispanic:2.28,asian:2.06,native:2.59,other:2.66},
+  70: {white:2.55,black:2.28,hispanic:1.95,asian:1.76,native:2.22,other:2.28},
+  75: {white:2.40,black:2.14,hispanic:1.84,asian:1.65,native:2.08,other:2.14},
+  80: {white:2.20,black:1.96,hispanic:1.68,asian:1.51,native:1.91,other:1.96},
+};
+
+function gailBaselineRisk(age, race) {
+  const keys = Object.keys(GAIL_BASELINE_5YR).map(Number).sort((a,b)=>a-b);
+  let k = keys[0];
+  for (const key of keys) { if (age >= key) k = key; }
+  return (GAIL_BASELINE_5YR[k][race] || GAIL_BASELINE_5YR[k].white) / 100;
+}
+
+// Average RR in population (for absolute risk calculation)
+const GAIL_AVG_RR = 1.24; // approximate from NCI calibration
+
+function calcGail(inputs) {
+  const { age, race, menarche, firstBirth, fam1, biopsies, atyp } = inputs;
+
+  // Age at menarche RR
+  const menRR = menarche <= 11 ? 1.21 : menarche <= 13 ? 1.00 : 0.87;
+  const menLabel = menarche <= 11 ? 'Early menarche (≤11)' : menarche <= 13 ? 'Menarche 12–13' : 'Late menarche (≥14)';
+
+  // Age at first birth RR (simplified, ignores interaction with relatives per full model)
+  const fbMap = {
+    nulliparous: { rr: 1.27, label: 'No live births' },
+    lt20:        { rr: 0.77, label: 'First birth <20' },
+    '20_24':     { rr: 0.97, label: 'First birth 20–24' },
+    '25_29':     { rr: 1.12, label: 'First birth 25–29' },
+    '30_34':     { rr: 1.24, label: 'First birth 30–34' },
+    gte35:       { rr: 1.32, label: 'First birth ≥35' },
+  };
+  const fb = fbMap[firstBirth] || fbMap['25_29'];
+
+  // First-degree relatives RR
+  const famMap = { '0':{rr:1.00,label:'No affected relatives'}, '1':{rr:1.80,label:'1 first-degree relative'}, '2':{rr:2.90,label:'2+ first-degree relatives'} };
+  const fam = famMap[fam1] || famMap['0'];
+
+  // Biopsies RR
+  const biopMap = { '0':{rr:1.00,label:'No biopsies'}, '1':{rr:1.70,label:'1 prior biopsy'}, '2':{rr:2.27,label:'2+ prior biopsies'} };
+  const biop = biopMap[biopsies] || biopMap['0'];
+
+  // Atypical hyperplasia modifier
+  let atypRR = 1.0, atypLabel = 'Atypical hyperplasia: unknown';
+  if (atyp === 'yes')     { atypRR = 1.82; atypLabel = 'Atypical hyperplasia: yes'; }
+  else if (atyp === 'no') { atypRR = 0.93; atypLabel = 'Atypical hyperplasia: no'; }
+
+  const combined = menRR * fb.rr * fam.rr * biop.rr * atypRR;
+
+  // Absolute 5-year risk: baseline × (individual RR / average pop RR)
+  const base5 = gailBaselineRisk(age, race);
+  const indiv5 = base5 * (combined / GAIL_AVG_RR);
+  const r5 = Math.min(indiv5 * 100, 40);
+
+  // Lifetime: rough approximation using multiple 5-year windows
+  const yearsLeft = Math.max(0, 85 - age);
+  const windows = Math.floor(yearsLeft / 5);
+  let survProb = 1;
+  for (let i = 0; i < windows; i++) {
+    const winAge = age + i * 5;
+    const wb = gailBaselineRisk(winAge, race) * (combined / GAIL_AVG_RR);
+    survProb *= (1 - wb);
+  }
+  const rLife = Math.min((1 - survProb) * 100, 85);
+
+  const factors = [
+    { name: 'Age at menarche', rr: menRR, label: menLabel },
+    { name: 'Age at first birth', rr: fb.rr, label: fb.label },
+    { name: 'First-degree relatives', rr: fam.rr, label: fam.label },
+    { name: 'Prior biopsies', rr: biop.rr, label: biop.label },
+    { name: 'Atypical hyperplasia', rr: atypRR, label: atypLabel },
+  ];
+
+  return { r5, rLife, combined, factors };
+}
+
+// ── TYRER–CUZICK MODEL ───────────────────────────────────────────────────────
+const BASELINE_ANNUAL = 0.00145;
+
+function calcBMI(h, w) { return (!h || !w) ? null : w / ((h/100)**2); }
+
+function tcFactors(inputs) {
+  const { age, menarche, meno, bmi, firstBirth, oc, hrt, fam1, fam2, ovarian, brca, density, benign } = inputs;
+
+  const ageRR = age<30?.18:age<35?.35:age<40?.55:age<45?.80:age<50?1.00:age<55?1.20:age<60?1.40:age<65?1.55:age<70?1.65:1.72;
+  const menRR = !menarche?{rr:1.0,label:'Menarche: unknown'}: menarche<=11?{rr:1.20,label:`Menarche age ${menarche} (early)`}: menarche<=13?{rr:1.00,label:`Menarche age ${menarche} (average)`}:{rr:0.87,label:`Menarche age ${menarche} (late)`};
+  const menoRR = meno==='post'?{rr:1.12,label:'Post-menopausal'}:{rr:1.00,label:'Pre-menopausal'};
+
+  const fbMap = { nulliparous:{rr:1.30,label:'No live births'}, lt20:{rr:0.75,label:'First birth <20'}, '20_24':{rr:0.85,label:'First birth 20–24'}, '25_29':{rr:1.00,label:'First birth 25–29'}, '30_34':{rr:1.15,label:'First birth 30–34'}, gte35:{rr:1.30,label:'First birth ≥35'} };
+  const fbRR = fbMap[firstBirth] || { rr:1.0, label:'First birth: unknown' };
+
+  let bmiRR;
+  if (!bmi) { bmiRR = {rr:1.0,label:'BMI: not provided'}; }
+  else if (meno==='post') { bmiRR = bmi<18.5?{rr:0.80,label:`BMI ${bmi.toFixed(1)} underweight (post-meno)`}: bmi<25?{rr:1.00,label:`BMI ${bmi.toFixed(1)} normal (post-meno)`}: bmi<30?{rr:1.18,label:`BMI ${bmi.toFixed(1)} overweight (post-meno)`}:{rr:1.35,label:`BMI ${bmi.toFixed(1)} obese (post-meno)`}; }
+  else { bmiRR = bmi<25?{rr:1.00,label:`BMI ${bmi.toFixed(1)} normal (pre-meno)`}: bmi<30?{rr:0.96,label:`BMI ${bmi.toFixed(1)} overweight (pre-meno)`}:{rr:0.92,label:`BMI ${bmi.toFixed(1)} obese (pre-meno)`}; }
+
+  const famMap = { '0':{rr:1.00,label:'No 1st-degree relatives'}, '1':{rr:1.80,label:'1 first-degree relative'}, '2':{rr:2.90,label:'2+ first-degree relatives'} };
+  const fam1RR = famMap[fam1] || famMap['0'];
+
+  const fam2Map = { '0':{rr:1.00,label:'No 2nd-degree relatives'}, '1':{rr:1.25,label:'1 second-degree relative'}, '2':{rr:1.55,label:'2+ second-degree relatives'} };
+  const fam2RR = fam2Map[fam2] || fam2Map['0'];
+
+  const ovarianRR = ovarian==='yes'?{rr:1.15,label:'Ovarian cancer in family'}:{rr:1.00,label:'No ovarian cancer history'};
+  const brcaMap = { unknown:{rr:1.00,label:'BRCA unknown/not tested'}, negative:{rr:0.85,label:'BRCA negative'}, brca1:{rr:8.00,label:'BRCA1 mutation carrier'}, brca2:{rr:5.50,label:'BRCA2 mutation carrier'} };
+  const brcaRR = brcaMap[brca] || brcaMap.unknown;
+
+  const densityMap = { '1':{rr:0.60,label:'BI-RADS A (fatty)'}, '2':{rr:1.00,label:'BI-RADS B (scattered)'}, '3':{rr:1.60,label:'BI-RADS C (heterogeneous)'}, '4':{rr:2.10,label:'BI-RADS D (extremely dense)'} };
+  const densityRR = densityMap[density] || densityMap['2'];
+
+  const benignMap = { none:{rr:1.00,label:'No benign disease'}, hyperplasia:{rr:2.40,label:'Atypical hyperplasia'}, lcis:{rr:4.00,label:'LCIS'} };
+  const benignRR = benignMap[benign] || benignMap.none;
+
+  const ocMap = { never:{rr:1.00,label:'No OC use'}, past:{rr:1.05,label:'Past OC use'}, current:{rr:1.10,label:'Current OC use'} };
+  const ocRR = ocMap[oc] || ocMap.never;
+
+  const hrtMap = { never:{rr:1.00,label:'No HRT'}, past:{rr:1.02,label:'Past HRT'}, current:{rr:1.26,label:'Current combined HRT'} };
+  const hrtRR = hrtMap[hrt] || hrtMap.never;
+
+  const combined = ageRR * menRR.rr * menoRR.rr * fbRR.rr * bmiRR.rr * fam1RR.rr * fam2RR.rr * ovarianRR.rr * brcaRR.rr * densityRR.rr * benignRR.rr * ocRR.rr * hrtRR.rr;
+
+  const absRisk = (yrs) => (1 - Math.exp(-BASELINE_ANNUAL * combined * yrs)) * 100;
+  const r5 = absRisk(5);
+  const r10 = absRisk(10);
+  const rLife = Math.min(absRisk(Math.max(0, 80 - age)), 99);
+
+  const factors = [
+    { name: 'Age', rr: ageRR, label: `${age} years` },
+    { name: 'Menarche', rr: menRR.rr, label: menRR.label },
+    { name: 'Menopausal status', rr: menoRR.rr, label: menoRR.label },
+    { name: 'First birth', rr: fbRR.rr, label: fbRR.label },
+    { name: 'BMI', rr: bmiRR.rr, label: bmiRR.label },
+    { name: '1st-degree relatives', rr: fam1RR.rr, label: fam1RR.label },
+    { name: '2nd-degree relatives', rr: fam2RR.rr, label: fam2RR.label },
+    { name: 'Ovarian cancer (family)', rr: ovarianRR.rr, label: ovarianRR.label },
+    { name: 'BRCA status', rr: brcaRR.rr, label: brcaRR.label },
+    { name: 'Breast density', rr: densityRR.rr, label: densityRR.label },
+    { name: 'Benign breast disease', rr: benignRR.rr, label: benignRR.label },
+    { name: 'Oral contraceptives', rr: ocRR.rr, label: ocRR.label },
+    { name: 'HRT', rr: hrtRR.rr, label: hrtRR.label },
+  ];
+
+  return { r5, r10, rLife, combined, factors };
+}
+
+// ── BCSC MODEL ───────────────────────────────────────────────────────────────
+// Source: Tice et al. (2008), updated Tice et al. (2019)
+// 5-year absolute risks from published BCSC calibration tables
+
+const BCSC_BASE = {
+  // age group → race → base 5yr risk (%)
+  '35_39': { white:1.06, black:1.00, hispanic:0.86, asian:0.72, native:0.87, other:0.95 },
+  '40_44': { white:1.44, black:1.40, hispanic:1.20, asian:1.00, native:1.21, other:1.32 },
+  '45_49': { white:1.61, black:1.55, hispanic:1.33, asian:1.12, native:1.35, other:1.47 },
+  '50_54': { white:1.96, black:1.82, hispanic:1.57, asian:1.33, native:1.60, other:1.79 },
+  '55_59': { white:2.07, black:1.93, hispanic:1.66, asian:1.40, native:1.69, other:1.89 },
+  '60_64': { white:2.29, black:2.14, hispanic:1.84, asian:1.56, native:1.87, other:2.09 },
+  '65_69': { white:2.36, black:2.20, hispanic:1.89, asian:1.60, native:1.93, other:2.15 },
+  '70_74': { white:2.18, black:2.03, hispanic:1.75, asian:1.48, native:1.78, other:1.99 },
+};
+
+const BCSC_AVG_RR = 1.28;
+
+function bcscAgeGroup(age) {
+  if (age < 35) return '35_39';
+  if (age < 40) return '35_39';
+  if (age < 45) return '40_44';
+  if (age < 50) return '45_49';
+  if (age < 55) return '50_54';
+  if (age < 60) return '55_59';
+  if (age < 65) return '60_64';
+  if (age < 70) return '65_69';
+  return '70_74';
+}
+
+function calcBCSC(inputs) {
+  const { age, race, fam1, biopsies, atyp, density } = inputs;
+
+  const grp = bcscAgeGroup(age);
+  const baseRace = race === 'native' ? 'native' : race;
+  const base5 = (BCSC_BASE[grp][baseRace] || BCSC_BASE[grp].white);
+
+  // Relative risks (Tice 2019)
+  const famMap = { '0':{rr:1.00,label:'No 1st-degree relatives'}, '1':{rr:1.54,label:'1 first-degree relative'}, '2':{rr:2.15,label:'2+ first-degree relatives'} };
+  const famRR = famMap[fam1] || famMap['0'];
+
+  const biopMap = { '0':{rr:1.00,label:'No prior biopsies'}, '1':{rr:1.58,label:'1 prior biopsy'}, '2':{rr:2.04,label:'2+ prior biopsies'} };
+  const biopRR = biopMap[biopsies] || biopMap['0'];
+
+  let atypRR = {rr:1.00, label:'Atypical hyperplasia: unknown'};
+  if (atyp === 'yes')  atypRR = {rr:1.72, label:'Atypical hyperplasia: yes'};
+  if (atyp === 'no')   atypRR = {rr:0.93, label:'Atypical hyperplasia: no'};
+
+  const densityMap = { '1':{rr:0.62,label:'BI-RADS A (almost entirely fatty)'}, '2':{rr:1.00,label:'BI-RADS B (scattered)'}, '3':{rr:1.57,label:'BI-RADS C (heterogeneously dense)'}, '4':{rr:2.18,label:'BI-RADS D (extremely dense)'} };
+  const densityRR = densityMap[density] || densityMap['2'];
+
+  const combined = famRR.rr * biopRR.rr * atypRR.rr * densityRR.rr;
+  const r5 = Math.min(base5 * (combined / BCSC_AVG_RR), 40);
+
+  const factors = [
+    { name: '1st-degree relatives', rr: famRR.rr, label: famRR.label },
+    { name: 'Prior biopsies', rr: biopRR.rr, label: biopRR.label },
+    { name: 'Atypical hyperplasia', rr: atypRR.rr, label: atypRR.label },
+    { name: 'Breast density', rr: densityRR.rr, label: densityRR.label },
+  ];
+
+  return { r5, base5, combined, factors };
+}
+
+// ── Recommendations ──────────────────────────────────────────────────────────
+function gailRec(r5, rLife) {
+  if (r5 >= 1.67 || rLife >= 20) {
+    return `<strong>Gail 5-year risk ≥1.67%</strong> — Clinical action threshold per NCI guidelines:<br>
+• Discuss chemoprevention eligibility (tamoxifen, raloxifene, aromatase inhibitors)<br>
+• Ensure annual mammography<br>
+• Report any breast changes promptly`;
+  }
+  return `<strong>Gail 5-year risk below 1.67%</strong> — below the US standard intervention threshold.<br>
+• Follow age-appropriate mammography screening guidelines<br>
+• Maintain healthy lifestyle; reassess risk annually`;
+}
+
+function tcRec(rLife) {
+  if (rLife >= 20) return `<strong>High lifetime risk (≥20%)</strong> — Recommended actions:<br>• Annual MRI + mammography<br>• Genetic counselling (BRCA testing if not done)<br>• Discuss chemoprevention with specialist<br>• Consider referral to high-risk breast clinic`;
+  if (rLife >= 15) return `<strong>Moderate lifetime risk (15–20%)</strong>:<br>• Annual mammography; discuss MRI addition with clinician<br>• Genetic counselling if strong family history<br>• Limit alcohol, maintain healthy weight`;
+  return `<strong>Average/low lifetime risk (<15%)</strong>:<br>• Follow standard screening guidelines<br>• Mammography every 1–2 years from age 40–50 per provider guidance<br>• Healthy lifestyle: BMI <25, moderate alcohol, regular exercise`;
+}
+
+function bcscRec(r5, base5) {
+  const ratio = r5 / base5;
+  if (r5 >= 3 || ratio >= 2) return `<strong>Elevated BCSC 5-year risk</strong> — Above peer-group average:<br>• Discuss supplemental screening (ultrasound or MRI) with radiologist<br>• Dense breast tissue may warrant supplemental screening in your state<br>• Discuss risk reduction options with your provider`;
+  if (r5 >= 1.67) return `<strong>Moderate BCSC 5-year risk</strong> — Above standard threshold:<br>• Annual mammography strongly recommended<br>• Consider discussing chemoprevention options<br>• Reassess at each screening visit`;
+  return `<strong>Average BCSC 5-year risk</strong> — Near your demographic baseline:<br>• Routine screening mammography per guidelines<br>• Report any changes in breast symptoms to your provider`;
+}
+
+// ── Form submit ──────────────────────────────────────────────────────────────
+document.getElementById('riskForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const inputs = {
+    age:        parseFloat(document.getElementById('age').value) || 45,
+    race:       document.getElementById('race').value,
+    menarche:   parseFloat(document.getElementById('menarche').value) || 12,
+    firstBirth: document.getElementById('firstBirth').value,
+    fam1:       getRadio('fam1')     || '0',
+    fam2:       getRadio('fam2')     || '0',
+    biopsies:   getRadio('biopsies') || '0',
+    atyp:       getRadio('atyp')     || 'unknown',
+    meno:       getRadio('meno')     || 'pre',
+    oc:         getRadio('oc')       || 'never',
+    hrt:        getRadio('hrt')      || 'never',
+    ovarian:    getRadio('ovarian')  || 'no',
+    brca:       getRadio('brca')     || 'unknown',
+    density:    document.getElementById('density').value,
+    benign:     getRadio('benign')   || 'none',
+    bmi:        calcBMI(parseFloat(document.getElementById('height').value), parseFloat(document.getElementById('weight').value)),
+  };
+
+  // Run models
+  const gail = calcGail(inputs);
+  const tc   = tcFactors(inputs);
+  const bcsc = calcBCSC(inputs);
+
+  // ── Gail results ──
+  document.getElementById('gail-5yr').textContent  = pct(gail.r5);
+  document.getElementById('gail-life').textContent = pct(gail.rLife);
+  document.getElementById('gail-rr').textContent   = (gail.rLife / 12).toFixed(2) + '×';
+  const [gailBC, gailBL] = bandInfo(gail.r5, 'gail5');
+  const gailBandEl = document.getElementById('gail-band');
+  gailBandEl.textContent = gailBL; gailBandEl.className = 'band ' + gailBC;
+  setTimeout(() => { document.getElementById('gail-bar').style.width = Math.min(gail.r5 / 5 * 100, 100) + '%'; }, 60);
+  document.getElementById('gail-factors').innerHTML = factorHTML(gail.factors);
+  document.getElementById('gail-rec').innerHTML = gailRec(gail.r5, gail.rLife);
+
+  // ── TC results ──
+  document.getElementById('tc-life').textContent  = pct(tc.rLife);
+  document.getElementById('tc-10yr').textContent  = pct(tc.r10);
+  document.getElementById('tc-5yr').textContent   = pct(tc.r5);
+  document.getElementById('tc-rr').textContent    = (tc.rLife / 12).toFixed(2) + '×';
+  const [tcBC, tcBL] = bandInfo(tc.rLife, 'lifetime');
+  const tcBandEl = document.getElementById('tc-band');
+  tcBandEl.textContent = tcBL; tcBandEl.className = 'band ' + tcBC;
+  setTimeout(() => { document.getElementById('tc-bar').style.width = Math.min(tc.rLife / 30 * 100, 100) + '%'; }, 60);
+  document.getElementById('tc-factors').innerHTML = factorHTML(tc.factors);
+  document.getElementById('tc-rec').innerHTML = tcRec(tc.rLife);
+
+  // ── BCSC results ──
+  document.getElementById('bcsc-5yr').textContent = pct(bcsc.r5);
+  document.getElementById('bcsc-avg').textContent = pct(bcsc.base5);
+  document.getElementById('bcsc-rr').textContent  = (bcsc.r5 / bcsc.base5).toFixed(2) + '×';
+  const [bcscBC, bcscBL] = bandInfo(bcsc.r5, 'bcsc5');
+  const bcscBandEl = document.getElementById('bcsc-band');
+  bcscBandEl.textContent = bcscBL; bcscBandEl.className = 'band ' + bcscBC;
+  setTimeout(() => { document.getElementById('bcsc-bar').style.width = Math.min(bcsc.r5 / 5 * 100, 100) + '%'; }, 60);
+  document.getElementById('bcsc-factors').innerHTML = factorHTML(bcsc.factors);
+  document.getElementById('bcsc-rec').innerHTML = bcscRec(bcsc.r5, bcsc.base5);
+
+  document.getElementById('result-section').style.display = 'block';
+  document.getElementById('result-section').scrollIntoView({ behavior: 'smooth' });
+});
+
+function resetForm() {
+  document.getElementById('riskForm').reset();
+  document.querySelectorAll('.radio-group').forEach(g => {
+    const pills = g.querySelectorAll('.pill-wrap');
+    pills.forEach((p, i) => p.classList.toggle('selected', i === 0));
+    const radios = g.querySelectorAll('input[type="radio"]');
+    if (radios.length) radios[0].checked = true;
+  });
+  document.getElementById('result-section').style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
